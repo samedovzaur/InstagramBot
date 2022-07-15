@@ -7,7 +7,10 @@ from selenium.webdriver.common.keys import Keys
 import time
 class Instagram:
     def __init__(self,username,password):
-        self.browser=webdriver.Chrome("C:/Users/zaurs/OneDrive/Masaüstü/Selenium/chromedriver.exe")
+        self.browserProfile=webdriver.ChromeOptions()
+        self.browserProfile.add_experimental_option('prefs',{'intl.accept_langugages':'en,en_US'})
+        self.browser=webdriver.Chrome()
+        self.browser=webdriver.Chrome("C:/Users/zaurs/OneDrive/Masaüstü/Selenium/chromedriver.exe",chrome_options=self.browserProfile)
         self.username=username
         self.password=password
     def signIn(self):
@@ -47,8 +50,39 @@ class Instagram:
              for user in followers:
                 link=self.browser.find_element('cssSelector','a').get_attribute('href')
                 print(link)
+                
+    def followUser(self):
+        self.browser.get('https://www.instagram.com/'+username)
+        time.sleep(2)
+
+        followButton=self.browser.find_element('tagName','button')
+        if followButton!='Following':
+            followButton.click()
+            time.sleep(2)
+        else:
+            print('you are already following this account!')
+    
+    def unfollowUser(self,username):
+        self.browser.get('https://www.instagram.com/'+username)
+        time.sleep(2)
+
+        followButton=self.browser.find_element('tagName','button')
+        if followButton=="Following":
+            followButton.click()
+            time.sleep(2)
+            confirmButton=self.browser.find_element('xpath','//button[text()=Unfollow]').click()
+        else:
+            print('you are already not following!')
 
     
 instgram=Instagram(username,password)
 instgram.signIn()
 instgram.getFollowers()  
+instgram.followUser('cristiano')
+instgram.unfollowUser('cristiano')
+
+# list=['kod_evreni','']
+
+# for user in list:
+#     instgram.followUser(user)
+#     time.sleep(2)
